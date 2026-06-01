@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pulse Studio — Digital Marketing & Creative Agency · New York</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --v:  #7c3aed;
+  --b:  #2563eb;
+  --c:  #06b6d4;
+  --v2: #a855f7;
+  --bg: #080810;
+  --bg2:#0d0d1a;
+  --bg3:#12121f;
+  --surface:#16162a;
+  --border:rgba(124,58,237,0.18);
+  --text:#f0eeff;
+  --mid:#8884aa;
+  --dim:#3a3a5c;
+  --white:#ffffff;
+}
+
+html { scroll-behavior:smooth; }
+
+body {
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+  font-weight:300;
+  overflow-x:hidden;
+  cursor:none;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── CURSOR ── */
+#cur {
+  position:fixed; width:10px; height:10px;
+  background:var(--c); border-radius:50%;
+  pointer-events:none; z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:width .2s,height .2s,background .25s;
+  mix-blend-mode:screen;
+}
+#cur-halo {
+  position:fixed; width:50px; height:50px;
+  border-radius:50%; pointer-events:none; z-index:9998;
+  transform:translate(-50%,-50%);
+  background:radial-gradient(circle, rgba(6,182,212,.12) 0%, transparent 70%);
+  transition:left .08s ease,top .08s ease,width .3s,height .3s;
+}
+body.cur-hover #cur { width:7px; height:7px; background:var(--v2); }
+body.cur-hover #cur-halo { width:80px; height:80px; background:radial-gradient(circle, rgba(168,85,247,.15) 0%, transparent 70%); }
+
+/* ── NAV ── */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:200;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:1.4rem 4rem;
+  background:rgba(8,8,16,0);
+  transition:background .4s,border-color .4s,backdrop-filter .4s;
+  border-bottom:1px solid transparent;
+}
+nav.scrolled {
+  background:rgba(8,8,16,.92);
+  border-bottom-color:var(--border);
+  backdrop-filter:blur(12px);
+}
+.nav-logo {
+  font-family:'Barlow Condensed',sans-serif; font-size:1.45rem; font-weight:700;
+  letter-spacing:.12em; text-transform:uppercase; text-decoration:none;
+  background:linear-gradient(90deg,var(--v2),var(--c));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.nav-links { display:flex; gap:2.5rem; list-style:none; }
+.nav-links a {
+  font-size:.75rem; font-weight:400; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--mid); text-decoration:none;
+  transition:color .2s;
+}
+.nav-links a:hover { color:var(--text); }
+.nav-btn {
+  font-family:'Barlow Condensed',sans-serif; font-size:.72rem; font-weight:600;
+  letter-spacing:.1em; text-transform:uppercase;
+  color:var(--white); background:linear-gradient(135deg,var(--v),var(--b));
+  border:none; padding:.65rem 1.4rem; cursor:none;
+  text-decoration:none; position:relative; overflow:hidden;
+  transition:opacity .2s,transform .15s;
+}
+.nav-btn::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg,var(--b),var(--c));
+  opacity:0; transition:opacity .3s;
+}
+.nav-btn:hover::before { opacity:1; }
+.nav-btn:hover { transform:translateY(-1px); }
+.nav-btn span { position:relative; z-index:1; }
+
+/* ── HERO ── */
+.hero {
+  position:relative; min-height:100vh;
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden; padding:8rem 4rem 5rem;
+}
+
+/* Animated gradient bg */
+.hero-gradient {
+  position:absolute; inset:-50%;
+  background: conic-gradient(from 0deg at 40% 50%,
+    #7c3aed 0deg, #2563eb 72deg, #06b6d4 144deg,
+    #0d0d1a 216deg, #7c3aed 360deg);
+  filter:blur(80px); opacity:.35;
+  animation:rotateBg 20s linear infinite;
+  z-index:0;
+}
+@keyframes rotateBg { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+.hero-grid-overlay {
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(124,58,237,.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,58,237,.06) 1px, transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse at center, black 30%, transparent 75%);
+  z-index:1;
+}
+
+#pulse-canvas {
+  position:absolute; inset:0; width:100%; height:100%;
+  z-index:2;
+  mix-blend-mode: screen;
+}
+
+.hero-content {
+  position:relative; z-index:2;
+  text-align:center; max-width:900px;
+}
+
+.hero-badge {
+  display:inline-flex; align-items:center; gap:.5rem;
+  background:rgba(124,58,237,.12); border:1px solid rgba(124,58,237,.3);
+  padding:.35rem 1rem; border-radius:100px; margin-bottom:2rem;
+  font-size:.65rem; font-weight:500; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--v2);
+  opacity:0; animation:fadeUp .8s ease .2s forwards;
+}
+.hero-badge-dot { width:5px; height:5px; border-radius:50%; background:var(--c); animation:badgePulse 2s ease infinite; }
+@keyframes badgePulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+
+.hero-title {
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:clamp(3.2rem,7vw,6.5rem);
+  font-weight:700; line-height:1.0; letter-spacing:.02em; text-transform:uppercase;
+  margin-bottom:1.8rem;
+  opacity:0; animation:fadeUp 1s ease .4s forwards;
+}
+.hero-title .grad {
+  background:linear-gradient(135deg, var(--v2) 0%, var(--b) 45%, var(--c) 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  background-size:200% auto;
+  animation:gradShift 4s ease infinite;
+}
+@keyframes gradShift { 0%,100%{background-position:0%} 50%{background-position:100%} }
+
+.hero-sub {
+  font-size:1.05rem; font-weight:300; color:var(--mid);
+  line-height:1.75; max-width:560px; margin:0 auto 3rem;
+  opacity:0; animation:fadeUp .9s ease .6s forwards;
+}
+
+.hero-actions {
+  display:flex; align-items:center; justify-content:center;
+  gap:1.2rem; margin-bottom:4.5rem;
+  opacity:0; animation:fadeUp .8s ease .8s forwards;
+}
+.btn-primary {
+  font-family:'Barlow Condensed',sans-serif; font-size:.95rem; font-weight:700;
+  letter-spacing:.18em; text-transform:uppercase;
+  color:var(--white); background:linear-gradient(135deg,var(--v),var(--b));
+  border:none; padding:1rem 2rem; cursor:none;
+  text-decoration:none; position:relative; overflow:hidden;
+  transition:transform .15s,box-shadow .3s;
+  box-shadow:0 0 0 rgba(124,58,237,0);
+}
+.btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(124,58,237,.4); }
+.btn-ghost {
+  font-family:'Barlow Condensed',sans-serif; font-size:.95rem; font-weight:700;
+  letter-spacing:.18em; text-transform:uppercase;
+  color:var(--text); background:transparent;
+  border:1px solid var(--dim); padding:1rem 2rem;
+  cursor:none; text-decoration:none;
+  transition:border-color .2s,color .2s,box-shadow .3s;
+}
+.btn-ghost:hover { border-color:var(--v2); color:var(--v2); box-shadow:0 0 20px rgba(168,85,247,.15); }
+
+.hero-stats {
+  display:flex; justify-content:center; gap:4rem;
+  padding-top:3.5rem; border-top:1px solid var(--border);
+  opacity:0; animation:fadeUp .8s ease 1s forwards;
+}
+.hero-stat-num {
+  font-family:'Barlow Condensed',sans-serif; font-size:2.2rem; font-weight:700; letter-spacing:.03em;
+  background:linear-gradient(135deg,var(--v2),var(--c));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.hero-stat-label { font-size:.7rem; color:var(--mid); letter-spacing:.1em; text-transform:uppercase; margin-top:.3rem; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:none} }
+
+/* ── SERVICES ── */
+#services {
+  padding:8rem 4rem;
+  background:var(--bg2);
+  position:relative;
+}
+#services::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg,transparent,var(--v),transparent);
+  opacity:.3;
+}
+
+.sec-header { margin-bottom:4rem; }
+.sec-eyebrow {
+  font-size:.65rem; font-weight:500; letter-spacing:.35em;
+  text-transform:uppercase; color:var(--c); margin-bottom:.8rem;
+}
+.sec-title {
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:clamp(2rem,4vw,3.2rem);
+  font-weight:700; line-height:1.05; letter-spacing:.03em; text-transform:uppercase;
+}
+.sec-title .grad {
+  background:linear-gradient(135deg,var(--v2),var(--c));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+
+.services-grid {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:1.5px;
+  background:var(--border);
+  border:1.5px solid var(--border);
+}
+.service-card {
+  background:var(--bg2); padding:2.5rem 2rem;
+  position:relative; overflow:hidden; cursor:none;
+  transition:background .3s;
+}
+.service-card::before {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(circle at 30% 50%, rgba(124,58,237,.12) 0%, transparent 60%);
+  opacity:0; transition:opacity .4s;
+}
+.service-card:hover { background:var(--bg3); }
+.service-card:hover::before { opacity:1; }
+
+/* glow border top */
+.service-card::after {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg,var(--v),var(--c));
+  transform:scaleX(0); transform-origin:left;
+  transition:transform .4s cubic-bezier(.16,1,.3,1);
+}
+.service-card:hover::after { transform:scaleX(1); }
+
+.service-icon {
+  width:44px; height:44px; border-radius:10px;
+  background:rgba(124,58,237,.1); border:1px solid rgba(124,58,237,.2);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.2rem; margin-bottom:1.5rem;
+  transition:background .3s,border-color .3s,box-shadow .3s;
+}
+.service-card:hover .service-icon {
+  background:rgba(124,58,237,.2); border-color:var(--v);
+  box-shadow:0 0 20px rgba(124,58,237,.25);
+}
+.service-name {
+  font-family:'Barlow Condensed',sans-serif; font-size:1.2rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+  margin-bottom:.6rem; transition:color .2s;
+}
+.service-card:hover .service-name { color:var(--v2); }
+.service-desc { font-size:.82rem; color:var(--mid); line-height:1.75; }
+
+/* ── CASES ── */
+#cases {
+  padding:8rem 4rem;
+  background:var(--bg);
+}
+.cases-grid { display:flex; flex-direction:column; gap:2px; margin-top:4rem; }
+.case-card {
+  display:grid; grid-template-columns:1fr 1.8fr 1fr;
+  align-items:center; gap:0;
+  background:var(--surface); padding:0;
+  border:1px solid var(--border);
+  overflow:hidden; position:relative;
+  transition:border-color .3s;
+}
+.case-card:hover { border-color:rgba(124,58,237,.5); }
+.case-card::before {
+  content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
+  background:linear-gradient(to bottom,var(--v),var(--c));
+  transform:scaleY(0); transform-origin:top;
+  transition:transform .4s cubic-bezier(.16,1,.3,1);
+}
+.case-card:hover::before { transform:scaleY(1); }
+
+.case-img { height:220px; overflow:hidden; }
+.case-img img { width:100%; height:100%; object-fit:cover; filter:brightness(.7) saturate(.8); transition:filter .4s,transform .6s; }
+.case-card:hover .case-img img { filter:brightness(.85) saturate(1); transform:scale(1.04); }
+
+.case-body { padding:2.5rem; }
+.case-client {
+  font-size:.62rem; font-weight:500; letter-spacing:.3em;
+  text-transform:uppercase; color:var(--c); margin-bottom:.6rem;
+}
+.case-name {
+  font-family:'Barlow Condensed',sans-serif; font-size:1.6rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+  margin-bottom:.8rem;
+}
+.case-desc { font-size:.83rem; color:var(--mid); line-height:1.75; }
+
+.case-metrics { padding:2.5rem; display:flex; flex-direction:column; gap:1.8rem; align-items:center; justify-content:center; border-left:1px solid var(--border); }
+.metric-num {
+  font-family:'Barlow Condensed',sans-serif; font-size:2.5rem; font-weight:800; letter-spacing:.02em;
+  background:linear-gradient(135deg,var(--v2),var(--c));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  text-align:center;
+}
+.metric-label { font-size:.68rem; color:var(--mid); letter-spacing:.12em; text-transform:uppercase; text-align:center; margin-top:.2rem; }
+
+/* ── WHY US ── */
+#why {
+  padding:8rem 4rem;
+  background:var(--bg2);
+  position:relative; overflow:hidden;
+}
+.why-glow {
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  width:600px; height:600px; border-radius:50%;
+  background:radial-gradient(circle,rgba(37,99,235,.08) 0%,transparent 70%);
+  pointer-events:none;
+}
+.why-grid {
+  display:grid; grid-template-columns:repeat(4,1fr);
+  gap:2px; background:var(--border);
+  border:1.5px solid var(--border);
+  margin-top:4rem;
+}
+.why-card {
+  background:var(--bg2); padding:3rem 2rem;
+  text-align:center; position:relative; overflow:hidden;
+  transition:background .3s;
+}
+.why-card:hover { background:var(--bg3); }
+.why-card::after {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg,var(--v),var(--c));
+  transform:scaleX(0); transition:transform .4s;
+}
+.why-card:hover::after { transform:scaleX(1); }
+.why-num {
+  font-family:'Barlow Condensed',sans-serif; font-size:3.5rem; font-weight:800; letter-spacing:.02em;
+  background:linear-gradient(135deg,var(--v2) 0%,var(--c) 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  line-height:1; margin-bottom:.6rem;
+  display:block;
+}
+.why-label {
+  font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  margin-bottom:.5rem;
+}
+.why-desc { font-size:.78rem; color:var(--mid); line-height:1.7; }
+
+/* ── CONTACT ── */
+#contact {
+  padding:8rem 4rem;
+  background:var(--bg);
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:7rem; align-items:start;
+}
+.contact-left .sec-title { margin-bottom:1.5rem; }
+.contact-intro { font-size:.9rem; color:var(--mid); line-height:1.85; margin-bottom:2.5rem; }
+
+/* Calendly-style slots */
+.booking-label {
+  font-size:.65rem; font-weight:500; letter-spacing:.28em;
+  text-transform:uppercase; color:var(--c); margin-bottom:1rem;
+}
+.slots-grid {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:.6rem; margin-bottom:2.5rem;
+}
+.slot {
+  border:1px solid var(--border); padding:.65rem .5rem;
+  text-align:center; font-size:.75rem; color:var(--mid);
+  cursor:none; transition:border-color .2s,color .2s,background .2s,box-shadow .2s;
+  user-select:none;
+}
+.slot:hover,.slot.sel {
+  border-color:var(--v); color:var(--v2);
+  background:rgba(124,58,237,.08);
+  box-shadow:0 0 14px rgba(124,58,237,.2);
+}
+.slot.taken { opacity:.3; cursor:not-allowed; }
+
+.contact-divider {
+  display:flex; align-items:center; gap:1rem; margin:2rem 0;
+  font-size:.65rem; letter-spacing:.2em; text-transform:uppercase; color:var(--dim);
+}
+.contact-divider::before,.contact-divider::after {
+  content:''; flex:1; height:1px; background:var(--border);
+}
+
+/* Form */
+.form-group { margin-bottom:1.3rem; position:relative; }
+.form-label {
+  display:block; font-size:.6rem; font-weight:500; letter-spacing:.28em;
+  text-transform:uppercase; color:var(--dim); margin-bottom:.5rem;
+  transition:color .2s;
+}
+.form-group:focus-within .form-label { color:var(--v2); }
+.form-input,.form-select,.form-textarea {
+  width:100%; background:var(--surface);
+  border:1px solid var(--border);
+  padding:.85rem 1rem; font-family:'Inter',sans-serif;
+  font-size:.88rem; font-weight:300; color:var(--text);
+  outline:none; transition:border-color .3s,box-shadow .3s;
+  appearance:none; -webkit-appearance:none;
+}
+.form-input::placeholder,.form-textarea::placeholder { color:var(--dim); }
+.form-input:focus,.form-select:focus,.form-textarea:focus {
+  border-color:var(--v);
+  box-shadow:0 0 0 3px rgba(124,58,237,.1);
+}
+.form-textarea { resize:none; height:100px; line-height:1.7; }
+.form-select { cursor:none; }
+.form-select option { background:var(--bg3); }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+.btn-submit {
+  width:100%; margin-top:.5rem;
+  font-family:'Barlow Condensed',sans-serif; font-size:.95rem; font-weight:700;
+  letter-spacing:.18em; text-transform:uppercase;
+  color:var(--white); border:none; cursor:none;
+  padding:1.1rem; position:relative; overflow:hidden;
+  background:linear-gradient(135deg,var(--v),var(--b),var(--c));
+  background-size:200% auto;
+  transition:background-position .4s,box-shadow .3s,transform .15s;
+}
+.btn-submit:hover {
+  background-position:right center;
+  box-shadow:0 8px 30px rgba(124,58,237,.4);
+  transform:translateY(-1px);
+}
+
+/* contact info */
+.contact-info-items { display:flex; flex-direction:column; gap:1.2rem; margin-top:2.5rem; }
+.c-info { display:flex; align-items:center; gap:.9rem; }
+.c-info-icon {
+  width:36px; height:36px; border-radius:8px;
+  background:rgba(124,58,237,.1); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center; font-size:.9rem;
+  flex-shrink:0;
+}
+.c-info-label { font-size:.6rem; letter-spacing:.2em; text-transform:uppercase; color:var(--dim); }
+.c-info-val { font-size:.88rem; color:var(--text); }
+
+/* ── FOOTER ── */
+footer {
+  background:var(--bg2); padding:2.5rem 4rem;
+  display:flex; align-items:center; justify-content:space-between;
+  border-top:1px solid var(--border);
+}
+.ft-logo {
+  font-family:'Barlow Condensed',sans-serif; font-size:1.3rem; font-weight:700; letter-spacing:.15em; text-transform:uppercase;
+  background:linear-gradient(135deg,var(--v2),var(--c));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.ft-copy { font-size:.7rem; color:var(--dim); }
+
+/* ── REVEAL ── */
+.reveal { opacity:0; transform:translateY(26px); transition:opacity .85s cubic-bezier(.16,1,.3,1),transform .85s cubic-bezier(.16,1,.3,1); }
+.reveal.visible { opacity:1; transform:none; }
+.rd1{transition-delay:.08s}.rd2{transition-delay:.16s}.rd3{transition-delay:.24s}.rd4{transition-delay:.32s}
+
+@media(max-width:900px){
+  nav{padding:1.2rem 1.5rem;}
+  .nav-links{display:none;}
+  .hero{padding:6rem 1.5rem 4rem;}
+  #services,#cases,#why,#contact{padding:4rem 1.5rem;}
+  .services-grid,.why-grid{grid-template-columns:1fr 1fr;}
+  .case-card{grid-template-columns:1fr;}
+  .case-img{height:200px;}
+  .case-metrics{flex-direction:row;justify-content:space-around;border-left:none;border-top:1px solid var(--border);}
+  #contact{grid-template-columns:1fr;gap:3rem;}
+  .slots-grid{grid-template-columns:repeat(2,1fr);}
+  .form-row{grid-template-columns:1fr;}
+  footer{flex-direction:column;gap:.5rem;text-align:center;padding:2rem;}
+  body{cursor:auto;}
+  #cur,#cur-halo{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-halo"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">Pulse Studio</a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#cases">Work</a></li>
+    <li><a href="#why">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-btn"><span>Let's talk</span></a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-gradient"></div>
+  <div class="hero-grid-overlay"></div>
+  <canvas id="pulse-canvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="hero-badge-dot"></div>
+      Now accepting clients for Q3 2025
+    </div>
+    <h1 class="hero-title">
+      We build brands<br>
+      <span class="grad">that convert.</span>
+    </h1>
+    <p class="hero-sub">
+      Pulse Studio is a digital-first creative agency based in New York. We help ambitious companies grow through strategy, design, and performance marketing.
+    </p>
+    <div class="hero-actions">
+      <a href="#cases" class="btn-primary">See our work</a>
+      <a href="#contact" class="btn-ghost">Let's talk →</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-num">50+</div>
+        <div class="hero-stat-label">Projects delivered</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">98%</div>
+        <div class="hero-stat-label">Client satisfaction</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">$12M+</div>
+        <div class="hero-stat-label">Revenue generated</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">3</div>
+        <div class="hero-stat-label">Countries</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="sec-header reveal">
+    <p class="sec-eyebrow">What we do</p>
+    <h2 class="sec-title">Full-stack <span class="grad">creative services.</span></h2>
+  </div>
+  <div class="services-grid reveal">
+    <div class="service-card">
+      <div class="service-icon">✦</div>
+      <div class="service-name">Brand Strategy</div>
+      <p class="service-desc">From naming and identity to full brand systems. We craft visual languages that are impossible to ignore and built to last.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">⬡</div>
+      <div class="service-name">Web Design & Dev</div>
+      <p class="service-desc">Pixel-perfect websites and landing pages engineered for speed, conversion, and long-term scalability. No templates — ever.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">◎</div>
+      <div class="service-name">SEO & Content</div>
+      <p class="service-desc">Data-driven SEO strategy paired with content that ranks. We turn Google into your highest-converting sales channel.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">△</div>
+      <div class="service-name">Social Media</div>
+      <p class="service-desc">Platform-native content strategy, creative direction, and community management for brands that want to actually matter online.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">◈</div>
+      <div class="service-name">Paid Advertising</div>
+      <p class="service-desc">Meta, Google, TikTok, LinkedIn — full-funnel paid campaigns with obsessive creative testing and transparent reporting.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">⊕</div>
+      <div class="service-name">Growth Consulting</div>
+      <p class="service-desc">Strategic advisory for founders and marketing teams. We embed with your team, audit what's broken, and build the growth engine.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CASES -->
+<section id="cases">
+  <div class="sec-header reveal">
+    <p class="sec-eyebrow">Case studies</p>
+    <h2 class="sec-title">Results that <span class="grad">speak louder.</span></h2>
+  </div>
+  <div class="cases-grid">
+
+    <div class="case-card reveal">
+      <div class="case-img">
+        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=700&q=80&auto=format&fit=crop" alt="Arkive case">
+      </div>
+      <div class="case-body">
+        <div class="case-client">SaaS · B2B</div>
+        <h3 class="case-name">Arkive Analytics</h3>
+        <p class="case-desc">Complete rebrand and website overhaul for a data intelligence startup preparing for Series A. We redesigned their entire go-to-market presence — brand system, website, sales deck, and paid acquisition strategy — in 6 weeks.</p>
+      </div>
+      <div class="case-metrics">
+        <div>
+          <div class="metric-num">+340%</div>
+          <div class="metric-label">Organic traffic</div>
+        </div>
+        <div>
+          <div class="metric-num">×4.2</div>
+          <div class="metric-label">Demo requests</div>
+        </div>
+        <div>
+          <div class="metric-num">$4M</div>
+          <div class="metric-label">Series A raised</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="case-card reveal rd1">
+      <div class="case-img">
+        <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=700&q=80&auto=format&fit=crop" alt="Crate case">
+      </div>
+      <div class="case-body">
+        <div class="case-client">E-commerce · DTC</div>
+        <h3 class="case-name">Crate Goods Co.</h3>
+        <p class="case-desc">Performance marketing and CRO engagement for a direct-to-consumer home goods brand stagnating at 3% conversion. We restructured their Meta funnel, rewrote landing pages, and introduced email flows that became their #1 revenue channel.</p>
+      </div>
+      <div class="case-metrics">
+        <div>
+          <div class="metric-num">3→9%</div>
+          <div class="metric-label">Conversion rate</div>
+        </div>
+        <div>
+          <div class="metric-num">×3.1</div>
+          <div class="metric-label">ROAS improvement</div>
+        </div>
+        <div>
+          <div class="metric-num">+$2.4M</div>
+          <div class="metric-label">Annual revenue</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="case-card reveal rd2">
+      <div class="case-img">
+        <img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=700&q=80&auto=format&fit=crop" alt="Luma case">
+      </div>
+      <div class="case-body">
+        <div class="case-client">HealthTech · Consumer</div>
+        <h3 class="case-name">Luma Wellness</h3>
+        <p class="case-desc">Brand launch and growth strategy for a mental wellness app entering a crowded market. We built their brand identity, app store presence, and creator marketing playbook from scratch — achieving 50K downloads in the first 90 days.</p>
+      </div>
+      <div class="case-metrics">
+        <div>
+          <div class="metric-num">50K</div>
+          <div class="metric-label">Downloads · 90 days</div>
+        </div>
+        <div>
+          <div class="metric-num">4.8★</div>
+          <div class="metric-label">App Store rating</div>
+        </div>
+        <div>
+          <div class="metric-num">-42%</div>
+          <div class="metric-label">CAC reduction</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- WHY US -->
+<section id="why">
+  <div class="why-glow"></div>
+  <div class="sec-header reveal">
+    <p class="sec-eyebrow">Why Pulse</p>
+    <h2 class="sec-title">Numbers don't <span class="grad">lie.</span></h2>
+  </div>
+  <div class="why-grid reveal">
+    <div class="why-card">
+      <span class="why-num" data-target="50" data-suffix="+">0</span>
+      <div class="why-label">Projects Delivered</div>
+      <p class="why-desc">Across SaaS, e-commerce, healthtech, fintech, and consumer brands.</p>
+    </div>
+    <div class="why-card">
+      <span class="why-num" data-target="98" data-suffix="%">0</span>
+      <div class="why-label">Client Satisfaction</div>
+      <p class="why-desc">Measured by NPS surveys sent at the end of every engagement.</p>
+    </div>
+    <div class="why-card">
+      <span class="why-num" data-target="5" data-suffix=" yrs">0</span>
+      <div class="why-label">In the Market</div>
+      <p class="why-desc">Founded in New York in 2019. Bootstrapped, profitable, and independent.</p>
+    </div>
+    <div class="why-card">
+      <span class="why-num" data-target="3" data-suffix=" countries">0</span>
+      <div class="why-label">Global Presence</div>
+      <p class="why-desc">US, UK, and Canada — with clients from 12 different countries.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-left reveal">
+    <p class="sec-eyebrow">Contact</p>
+    <h2 class="sec-title">Ready to <span class="grad">grow?</span></h2>
+    <p class="contact-intro">
+      We take on a limited number of new clients each quarter to keep quality high. Tell us about your project — we'll get back to you within 24 hours.
+    </p>
+
+    <div class="booking-label">Or pick a time to chat →</div>
+    <div class="slots-grid" id="slots">
+      <div class="slot" data-time="Mon 9am">Mon 9am</div>
+      <div class="slot taken">Mon 11am</div>
+      <div class="slot" data-time="Mon 2pm">Mon 2pm</div>
+      <div class="slot taken">Tue 10am</div>
+      <div class="slot" data-time="Tue 3pm">Tue 3pm</div>
+      <div class="slot" data-time="Wed 9am">Wed 9am</div>
+      <div class="slot taken">Wed 11am</div>
+      <div class="slot" data-time="Thu 2pm">Thu 2pm</div>
+      <div class="slot" data-time="Fri 10am">Fri 10am</div>
+    </div>
+    <div id="slot-confirm" style="font-size:.8rem;color:var(--c);min-height:1.2rem;letter-spacing:.05em;"></div>
+
+    <div class="contact-info-items">
+      <div class="c-info">
+        <div class="c-info-icon">✉</div>
+        <div>
+          <div class="c-info-label">Email</div>
+          <div class="c-info-val">hello@pulsestudio.co</div>
+        </div>
+      </div>
+      <div class="c-info">
+        <div class="c-info-icon">📍</div>
+        <div>
+          <div class="c-info-label">Office</div>
+          <div class="c-info-val">340 Pine St, SoHo, New York NY 10012</div>
+        </div>
+      </div>
+      <div class="c-info">
+        <div class="c-info-icon">📞</div>
+        <div>
+          <div class="c-info-label">Phone</div>
+          <div class="c-info-val">+1 (212) 555-0190</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal rd1">
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">First name</label>
+        <input type="text" class="form-input" placeholder="Alex">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Last name</label>
+        <input type="text" class="form-input" placeholder="Johnson">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Work email</label>
+      <input type="email" class="form-input" placeholder="alex@yourcompany.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Company & website</label>
+      <input type="text" class="form-input" placeholder="Acme Inc. · acme.com">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Service needed</label>
+        <select class="form-select">
+          <option value="" disabled selected>Select</option>
+          <option>Brand Strategy</option>
+          <option>Web Design & Dev</option>
+          <option>SEO & Content</option>
+          <option>Paid Advertising</option>
+          <option>Social Media</option>
+          <option>Growth Consulting</option>
+          <option>Full package</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Monthly budget</label>
+        <select class="form-select">
+          <option value="" disabled selected>Select</option>
+          <option>Under $2,000</option>
+          <option>$2,000 – $5,000</option>
+          <option>$5,000 – $10,000</option>
+          <option>$10,000+</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tell us about your project</label>
+      <textarea class="form-textarea" placeholder="What are you building? What's broken? What does success look like in 6 months?"></textarea>
+    </div>
+    <button class="btn-submit" id="submit-btn">Send message →</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-logo">Pulse Studio</div>
+  <div class="ft-copy">© 2024 Pulse Studio LLC · SoHo, New York · All rights reserved</div>
+</footer>
+
+<script>
+// Cursor
+const cur = document.getElementById('cur');
+const halo = document.getElementById('cur-halo');
+document.addEventListener('mousemove', e => {
+  cur.style.left = e.clientX + 'px';
+  cur.style.top  = e.clientY + 'px';
+  halo.style.left = e.clientX + 'px';
+  halo.style.top  = e.clientY + 'px';
+});
+document.querySelectorAll('a,button,.service-card,.case-card,.why-card,.slot,.form-input,.form-select,.form-textarea').forEach(el => {
+  el.addEventListener('mouseenter', () => document.body.classList.add('cur-hover'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('cur-hover'));
+});
+
+// Nav
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', scrollY > 60);
+}, { passive: true });
+
+// Scroll reveal
+const obs = new IntersectionObserver(es => {
+  es.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.07 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+// Counter animation
+function animateCounter(el) {
+  const target = +el.dataset.target;
+  const suffix = el.dataset.suffix || '';
+  const duration = 1600;
+  const start = performance.now();
+  const update = now => {
+    const p = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.floor(ease * target) + suffix;
+    if (p < 1) requestAnimationFrame(update);
+    else el.textContent = target + suffix;
+  };
+  requestAnimationFrame(update);
+}
+
+const counterObs = new IntersectionObserver(es => {
+  es.forEach(e => {
+    if (e.isIntersecting && !e.target.dataset.done) {
+      e.target.dataset.done = '1';
+      animateCounter(e.target);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.why-num[data-target]').forEach(el => counterObs.observe(el));
+
+// Slot picker
+document.querySelectorAll('.slot:not(.taken)').forEach(slot => {
+  slot.addEventListener('click', () => {
+    document.querySelectorAll('.slot').forEach(s => s.classList.remove('sel'));
+    slot.classList.add('sel');
+    document.getElementById('slot-confirm').textContent =
+      '✓ ' + slot.dataset.time + ' selected — confirm with your message below.';
+  });
+});
+
+// Form submit
+document.getElementById('submit-btn').addEventListener('click', function() {
+  this.textContent = '✓ Message sent — we\'ll be in touch within 24h';
+  this.style.background = 'linear-gradient(135deg,#166534,#15803d)';
+  this.disabled = true;
+});
+</script>
+
+<script>
+(function(){
+  const canvas = document.getElementById('pulse-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, mouse = { x: -999, y: -999 };
+  const COLORS = ['#7c3aed','#2563eb','#06b6d4','#a855f7'];
+  const CONNECT_DIST = 130;
+  const MOUSE_REPEL  = 110;
+  const N_BASE       = 80;
+  let pts = [];
+
+  function resize() {
+    const hero = canvas.parentElement;
+    W = canvas.width  = hero.clientWidth;
+    H = canvas.height = hero.clientHeight;
+    pts = Array.from({ length: N_BASE }, () => mkPt());
+  }
+
+  function mkPt() {
+    return {
+      x:  Math.random() * W,
+      y:  Math.random() * H,
+      vx: (Math.random() - .5) * .45,
+      vy: (Math.random() - .5) * .45,
+      r:  Math.random() * 1.5 + 1,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      baseVx: 0, baseVy: 0,
+    };
+  }
+
+  window.addEventListener('resize', resize);
+
+  const hero = canvas.parentElement;
+  hero.addEventListener('mousemove', e => {
+    const rect = hero.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+  });
+  hero.addEventListener('mouseleave', () => { mouse.x = -999; mouse.y = -999; });
+
+  function frame() {
+    ctx.clearRect(0, 0, W, H);
+
+    /* transparent — gradient bg shows through via mix-blend-mode:screen */
+    ctx.clearRect(0, 0, W, H);
+
+    pts.forEach(p => {
+      /* mouse repel */
+      const dx = p.x - mouse.x;
+      const dy = p.y - mouse.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < MOUSE_REPEL && dist > 0) {
+        const force = (MOUSE_REPEL - dist) / MOUSE_REPEL;
+        p.vx += (dx / dist) * force * .6;
+        p.vy += (dy / dist) * force * .6;
+      }
+
+      /* damping */
+      p.vx *= .985;
+      p.vy *= .985;
+
+      /* speed floor */
+      const spd = Math.sqrt(p.vx*p.vx + p.vy*p.vy);
+      if (spd < .15) {
+        p.vx += (Math.random() - .5) * .08;
+        p.vy += (Math.random() - .5) * .08;
+      }
+      /* speed cap */
+      if (spd > 2.5) { p.vx *= 2.5/spd; p.vy *= 2.5/spd; }
+
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) { p.x = 0; p.vx *= -1; }
+      if (p.x > W) { p.x = W; p.vx *= -1; }
+      if (p.y < 0) { p.y = 0; p.vy *= -1; }
+      if (p.y > H) { p.y = H; p.vy *= -1; }
+    });
+
+    /* connections */
+    for (let i = 0; i < pts.length; i++) {
+      for (let j = i + 1; j < pts.length; j++) {
+        const a = pts[i], b = pts[j];
+        const dx = a.x - b.x, dy = a.y - b.y;
+        const d  = Math.sqrt(dx*dx + dy*dy);
+        if (d < CONNECT_DIST) {
+          const alpha = (1 - d / CONNECT_DIST) * .4;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.strokeStyle = `rgba(168,85,247,${alpha})`;
+          ctx.lineWidth = .8;
+          ctx.stroke();
+        }
+      }
+    }
+
+    /* mouse proximity boost lines */
+    pts.forEach(p => {
+      const dx = p.x - mouse.x, dy = p.y - mouse.y;
+      const d  = Math.sqrt(dx*dx + dy*dy);
+      if (d < MOUSE_REPEL * 1.3) {
+        const alpha = (1 - d / (MOUSE_REPEL * 1.3)) * .5;
+        ctx.beginPath();
+        ctx.moveTo(mouse.x, mouse.y);
+        ctx.lineTo(p.x, p.y);
+        ctx.strokeStyle = `rgba(168,85,247,${alpha})`;
+        ctx.lineWidth = .6;
+        ctx.stroke();
+      }
+    });
+
+    /* dots */
+    pts.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = .75;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    });
+
+    requestAnimationFrame(frame);
+  }
+
+  resize();
+  frame();
+})();
+</script>
+
+</body>
+</html>
